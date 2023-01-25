@@ -1,0 +1,38 @@
+CC=cl
+LD=link
+
+SHARED_HEADERS=$(srcdir)/hks.h $(srcdir)/hksccontext.h
+
+srcdir=.
+
+CFLAGS=-nologo -MD -O2 -W3
+WFLAGS=-D_CRT_SECURE_NO_DEPRECATE
+LDFLAGS=-nologo
+
+TOP=..
+
+hksc.exe: hksc.obj
+	$(LD) $(LDFLAGS) -out:$@ hksc.obj
+
+hksc.obj: $(srcdir)/hksc.c $(SHARED_HEADERS)
+	$(CC) -c $(WFLAGS) $(CFLAGS) $(srcdir)/hksc.c
+
+compiler_t6.dll: compiler_t6.obj
+	$(LD) $(LDFLAGS) -dll -out:$@ compiler_t6.obj
+
+compiler_t7.dll: compiler_t7.obj
+	$(LD) $(LDFLAGS) -dll -out:$@ compiler_t7.obj
+
+compiler_t6.obj: $(srcdir)/compiler.c $(SHARED_HEADERS) $(srcdir)/symbols.h
+	$(CC) -c $(WFLAGS) $(CFLAGS) -DLUA_CODT6 -Fo:$@ $(srcdir)/compiler.c
+
+compiler_t7.obj: $(srcdir)/compiler.c $(SHARED_HEADERS) $(srcdir)/symbols.h
+	$(CC) -c $(WFLAGS) $(CFLAGS) -DLUA_CODT7 -Fo:$@ $(srcdir)/compiler.c
+
+clean:
+	-del *.obj 2>NUL
+	-del *.exp 2>NUL
+	-del *.exe 2>NUL
+	-del *.pdb 2>NUL
+	-del *.dll 2>NUL
+	-del *.lib 2>NUL
