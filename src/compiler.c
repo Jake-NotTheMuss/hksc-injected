@@ -176,6 +176,13 @@ static const char *getF (lua_State *s, void *ud, size_t *size) {
   }
   if (feof(lf->f)) return NULL;
   *size = fread(lf->buff, 1, LUAL_BUFFERSIZE, lf->f);
+  /* This needs to be done to ensure predictability as the Havok Script code
+     may still read bytes past the end of *size. This is a problem when testing
+     the BOM files, because uninitialized data after position *size in the
+     buffer will still be dereferenced as if it were a part of the source file.
+     This is a Havok Script bug */
+  if (*size < LUAL_BUFFERSIZE)
+    memset(lf->buff + *size, -1, LUAL_BUFFERSIZE - *size);
   return (*size > 0) ? lf->buff : NULL;
 }
 
