@@ -633,7 +633,7 @@ static void die(MidEndState *me)
 /* wait for CRT initialization */
 static void wait_for_target(void) {
 #if defined(LUA_CODT7)
-  while (*(int *)OFFS(0x1a8a8400) == 0) ;
+  while (*(int *)OFFS(0x1a8a6400) == 0) ;
 #elif defined(LUA_CODT6)
   while (*(int *)OFFS(0x3d83bc0) == 0) ;
 #endif /* LUA_CODT7 */

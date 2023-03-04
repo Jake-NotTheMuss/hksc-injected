@@ -21,6 +21,7 @@
 #define OFFS_runProtectedAndFixStack  0x370b0
 #define OFFS_hks_error             0xc4fe0
 #define OFFS_lua_tolstring         0x14eaa0
+
 /*
 `t6zm.exe' offsets for reference
 INIT_SYMBOL(hksi_hks_newstate,      0x197410);
@@ -37,18 +38,18 @@ INIT_SYMBOL(lua_pcall,              0x11360);
 #elif defined(LUA_CODT7)
 #define DEFAULT_CALL __fastcall
 #define OFFS_hksi_hks_newstate     0x1d4c250
-#define OFFS_lua_close             0x1d53690
+#define OFFS_lua_close             0x1d53600
 #define OFFS_hks_stateSettings     0x1d38f60
 #define OFFS_hksi_hks_dump         0x1d4be40
 #define OFFS_hks_defaultAllocator  0x1d49d40
 #define OFFS_hks_load              0x1d3afb0
 #define OFFS_lua_pushstring        0xa186b0
 #define OFFS_lua_pushlstring       0xa18430
-#define OFFS_hksi_lua_pushfstring  0x1d4e600
-#define OFFS_runProtectedAndFixStack  0x1d6a320
+#define OFFS_hksi_lua_pushfstring  0x1d4e570
+#define OFFS_runProtectedAndFixStack  0x1d6a290
 #define OFFS_hks_error             0x1d4c060
-#define OFFS_lua_remove            0x1d53e80
-#define OFFS_lua_tolstring         0x1d4ef60
+#define OFFS_lua_remove            0x1d53df0
+#define OFFS_lua_tolstring         0x1d4eed0
 #else
 #error Unsupported title
 #endif
