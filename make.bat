@@ -33,7 +33,7 @@ if not exist "%VCVARS%" (
 )
 
 if not exist bin mkdir bin
-cd bin
+pushd bin
 
 rem Build 64-bit binaries
 setlocal
@@ -57,6 +57,27 @@ call "%VCVARS%" x86 > NUL
 nmake %nmakeflags% compiler_t6.dll %*
 
 endlocal
+
+popd
+
+if "%1" == "test" (
+	if [%hksc_srcdir%] == [] (
+		echo "hksc_srcdir required for operation"
+		exit /b 1
+	)
+	if [%hksc_testdir%] == [] (
+		echo "hksc_testdir required for operation"
+		exit /b 1
+	)
+	echo "using srcdir=%hksc_srcdir%"
+	echo "using testdir=%hksc_testdir%"
+	rem call prepare.bat
+	set HKSCI=bin\hksc.exe
+	rem set hksc_srcdir=..\..\..\hks-compiler
+	rem set hksc_testdir=..\..
+	call prepare.bat
+	call maketest.bat
+)
 
 :DONE
 exit /b %errorlevel%

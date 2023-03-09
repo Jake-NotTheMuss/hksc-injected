@@ -29,6 +29,8 @@ compiler_t6.obj: $(srcdir)/compiler.c $(SHARED_HEADERS) $(srcdir)/symbols.h
 compiler_t7.obj: $(srcdir)/compiler.c $(SHARED_HEADERS) $(srcdir)/symbols.h
 	$(CC) -c $(WFLAGS) $(CFLAGS) -DLUA_CODT7 -Fo:$@ $(srcdir)/compiler.c
 
+test:
+
 clean:
 	-del *.obj 2>NUL
 	-del *.exp 2>NUL
