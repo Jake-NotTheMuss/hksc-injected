@@ -370,7 +370,7 @@ static int precompile_lua(MidEndState *me, const char *filename)
     goto compile;
   if (outname_p == NULL || *outname_p == '\0')
     outname_p = hksi_lua_pushfstring(s, "%s.luacallstackdb", basename);
-  if (outname_d == NULL || *outname_d == '\0');
+  if (outname_d == NULL || *outname_d == '\0')
     outname_d = hksi_lua_pushfstring(s, "%s.luadebug", basename);
   dumpdata[0].name = outname_c;
   dumpdata[0].strip = BYTECODE_STRIPPING_ALL;
