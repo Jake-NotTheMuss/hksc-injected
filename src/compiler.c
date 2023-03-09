@@ -325,20 +325,25 @@ static void logtopmsg(MidEndState *me, lua_State *s, int errcode, FILE *f)
   }
 }
 
-
+/* also removes the extension from filename */
 static const char *getbasename(lua_State *s, const char *filename)
 {
+  const char *base;
   const char *dot = strrchr(filename, '.');
   if (dot) {
     size_t basename_len = (size_t)(dot-filename);
-    if (basename_len == 0)
-      return filename;
-    lua_pushlstring(s, filename, basename_len);
-    return lua_tostring(s, -1);
+    if (basename_len != 0) {
+      lua_pushlstring(s, filename, basename_len);
+      filename = lua_tostring(s, -1);
+    }
   }
-  else {
-    return filename;
+  if (isalpha(filename[0]) && filename[1] == ':')
+    filename += 2;
+  for (base = filename; *filename; filename++) {
+    if (*filename == '/' || *filename == '\\')
+      base = filename + 1;
   }
+  return base;
 }
 
 
