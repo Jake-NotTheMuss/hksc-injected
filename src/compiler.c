@@ -372,13 +372,13 @@ static int precompile_lua(MidEndState *me, const char *filename)
     outname_p = hksi_lua_pushfstring(s, "%s.luacallstackdb", basename);
   if (outname_d == NULL || *outname_d == '\0')
     outname_d = hksi_lua_pushfstring(s, "%s.luadebug", basename);
-  dumpdata[0].name = outname_c;
-  dumpdata[0].strip = BYTECODE_STRIPPING_ALL;
   dumpdata[1].name = outname_p;
   dumpdata[1].strip = BYTECODE_STRIPPING_CALLSTACK_RECONSTRUCTION;
   dumpdata[2].name = outname_d;
   dumpdata[2].strip = BYTECODE_STRIPPING_DEBUG_ONLY;
   compile:
+  dumpdata[0].name = outname_c;
+  dumpdata[0].strip = BYTECODE_STRIPPING_ALL;
   status = luaL_loadfile(me, ctx, filename);
   if (status) {
     logtopmsg(me, s, status, stderr);
