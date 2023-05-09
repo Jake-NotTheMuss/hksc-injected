@@ -1,0 +1,13 @@
+README for hksc-injected
+
+This is a command-line program that I use for generating expect-files
+used in testing compiler output. It works by injecting a DLL into a
+target process which contains Havok Script compiler machinery in its
+image. Make sure the target process is running before calling the
+frontend program. The following games are supported:
+
+- Call of Duty: Black Ops II
+- Call of Duty: Black Ops III
+
+Build by running `make.bat'. The script requires Visual C++ tools to be
+installed on the machine.
