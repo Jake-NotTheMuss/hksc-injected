@@ -9,6 +9,15 @@
 
 #include <limits.h>
 
+#if !defined(LUA_CODT6) && !defined(LUA_CODT7)
+/* basically every game except Treyarch Cod enabled memoization */
+#define WITH_GLOBAL_MEMO
+#undef LUA_COD
+#else
+#undef WITH_GLOBAL_MEMO
+#define LUA_COD
+#endif
+
 #define LUAL_BUFFERSIZE BUFSIZ
 
 #define LUA_REGISTRYINDEX (-10000)
@@ -118,8 +127,12 @@ typedef struct HksCompilerSettings HksCompilerSettings;
 typedef int (*hks_debug_map)(const char *, int);
 
 struct HksCompilerSettings {
-  lu_byte m_emitStructCode;
+  int m_emitStructCode;
   const char **m_stripNames;
+#ifdef WITH_GLOBAL_MEMO
+  int m_emitMemoCode;
+  int m_isMemoTestingMode;
+#endif
   int m_bytecodeSharingFormat;
   int m_enableIntLiterals;
   hks_debug_map m_debugMap;
@@ -130,8 +143,10 @@ typedef struct HksStateSettings HksStateSettings;
 struct HksStateSettings {
   l_int32 m_gcPause;
   l_int32 m_gcStepMul;
+#if defined LUA_CODT6 || defined LUA_CODT7
   size_t m_gcEmergencyMemorySize;
   void *m_emergencyGCFailFunction;
+#endif /* t6/t7 */
   lua_Alloc m_allocator;
   void *m_allocatorData;
   lua_CFunction m_panicFunction;

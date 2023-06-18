@@ -50,6 +50,21 @@ INIT_SYMBOL(lua_pcall,              0x11360);
 #define OFFS_hks_error             0x1d4c060
 #define OFFS_lua_remove            0x1d53df0
 #define OFFS_lua_tolstring         0x1d4eed0
+#elif defined(LUA_SEKIRO)
+#define DEFAULT_CALL __fastcall
+#define OFFS_hksi_hks_newstate     0x142acb0
+#define OFFS_lua_close             0x1428140
+#define OFFS_hks_stateSettings     0x1427be0
+#define OFFS_hksi_hks_dump         0x142a6a0
+#define OFFS_hks_defaultAllocator  0x14442d0
+#define OFFS_hks_load              0x144d0a0
+#define OFFS_lua_pushstring        0x1480ba0
+#define OFFS_lua_pushlstring       0x147bbb0
+#define OFFS_hksi_lua_pushfstring  0x14299e0
+#define OFFS_runProtectedAndFixStack  0x145d040
+#define OFFS_hks_error             0x142c7e0
+#define OFFS_lua_remove            0x147cc50
+#define OFFS_lua_tolstring         0x147d940
 #else
 #error Unsupported title
 #endif
@@ -109,11 +124,18 @@ DECL_API(hks_defaultAllocator, void *,
 /*
 ** hks_load
 */
+#if defined(LUA_CODT6) || defined(LUA_CODT7)
 DECL_API(hks_load, int,
     (lua_State *s, HksCompilerSettings *options, lua_Reader reader,
      void *readerData, lua_Reader debugReader, void *debugReaderData,
      const char *chunkName));
 #define hks_load  (*p_hks_load)
+#else
+DECL_API(hks_load, int,
+    (lua_State *s, HksCompilerSettings *options, lua_Reader reader,
+     void *readerData, const char *chunkName));
+#define hks_load(s,o,f,d,x,y,c)  (*p_hks_load)(s,o,f,d,c)
+#endif
 
 
 /*

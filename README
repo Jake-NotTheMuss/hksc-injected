@@ -8,6 +8,7 @@ frontend program. The following games are supported:
 
 - Call of Duty: Black Ops II
 - Call of Duty: Black Ops III
+- Sekiro
 
 Build by running `make.bat'. The script requires Visual C++ tools to be
 installed on the machine.

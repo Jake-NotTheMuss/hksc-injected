@@ -15,10 +15,6 @@
 #include <errno.h>
 #include <limits.h>
 
-#if !defined(LUA_CODT7) && !defined(LUA_CODT6)
-#error You must define either LUA_CODT6 or LUA_CODT7
-#endif
-
 #include "hks.h"
 
 #include "hksccontext.h"
@@ -290,6 +286,10 @@ static int luaL_loadfile(MidEndState *me, hksc_Context *ctx,
   HksCompilerSettings settings;
   settings.m_emitStructCode = 1;
   settings.m_stripNames = NULL;
+#ifdef WITH_GLOBAL_MEMO
+  settings.m_emitMemoCode = 1;
+  settings.m_isMemoTestingMode = 1;
+#endif /* WITH_GLOBAL_MEMO */
   settings.m_bytecodeSharingFormat = BYTECODE_INPLACE;
   settings.m_enableIntLiterals = ctx->enable_int_literals;
   settings.m_debugMap = hks_identity_map;
@@ -369,13 +369,22 @@ static int precompile_lua(MidEndState *me, const char *filename)
   if (ctx->strip)
     goto compile;
   if (outname_p == NULL || *outname_p == '\0')
+#ifdef LUA_COD
     outname_p = hksi_lua_pushfstring(s, "%s.luacallstackdb", basename);
+#else /* !LUA_COD */
+    outname_p = hksi_lua_pushfstring(s, "%s.luaprofile", basename);
+#endif /* LUA_COD */
   if (outname_d == NULL || *outname_d == '\0')
     outname_d = hksi_lua_pushfstring(s, "%s.luadebug", basename);
   dumpdata[1].name = outname_p;
-  dumpdata[1].strip = BYTECODE_STRIPPING_CALLSTACK_RECONSTRUCTION;
   dumpdata[2].name = outname_d;
+#ifdef LUA_COD
+  dumpdata[1].strip = BYTECODE_STRIPPING_CALLSTACK_RECONSTRUCTION;
   dumpdata[2].strip = BYTECODE_STRIPPING_DEBUG_ONLY;
+#else /* !LUA_COD */
+  dumpdata[1].strip = BYTECODE_STRIPPING_PROFILING;
+  dumpdata[2].strip = BYTECODE_STRIPPING_NONE;
+#endif /* LUA_COD */
   compile:
   dumpdata[0].name = outname_c;
   dumpdata[0].strip = BYTECODE_STRIPPING_ALL;

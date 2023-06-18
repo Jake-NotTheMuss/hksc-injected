@@ -23,11 +23,17 @@ compiler_t6.dll: compiler_t6.obj
 compiler_t7.dll: compiler_t7.obj
 	$(LD) $(LDFLAGS) -dll -out:$@ compiler_t7.obj
 
+compiler_sekiro.dll: compiler_sekiro.obj
+	$(LD) $(LDFLAGS) -dll -out:$@ compiler_sekiro.obj
+
 compiler_t6.obj: $(srcdir)/compiler.c $(SHARED_HEADERS) $(srcdir)/symbols.h
 	$(CC) -c $(WFLAGS) $(CFLAGS) -DLUA_CODT6 -Fo:$@ $(srcdir)/compiler.c
 
 compiler_t7.obj: $(srcdir)/compiler.c $(SHARED_HEADERS) $(srcdir)/symbols.h
 	$(CC) -c $(WFLAGS) $(CFLAGS) -DLUA_CODT7 -Fo:$@ $(srcdir)/compiler.c
+
+compiler_sekiro.obj: $(srcdir)/compiler.c $(SHARED_HEADERS) $(srcdir)/symbols.h
+	$(CC) -c $(WFLAGS) $(CFLAGS) -DLUA_SEKIRO -Fo:$@ $(srcdir)/compiler.c
 
 test:
 

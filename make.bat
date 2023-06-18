@@ -44,7 +44,7 @@ if "%1" == "clean" (
 	goto DONE
 )
 
-nmake %nmakeflags% hksc.exe compiler_t7.dll %*
+nmake %nmakeflags% hksc.exe compiler_t7.dll compiler_sekiro.dll %*
 
 endlocal
 

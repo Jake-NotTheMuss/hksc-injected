@@ -53,12 +53,14 @@ static int gameid=-1;
 
 #define GAME_T6 0
 #define GAME_T7 1
-#define NUM_GAMES 2
+#define GAME_SEKIRO 2
+#define NUM_GAMES 3
 
 static size_t data_dir_offsets[NUM_GAMES] =
 {
   [GAME_T6] = 120,
-  [GAME_T7] = 136
+  [GAME_T7] = 136,
+  [GAME_SEKIRO] = 136
 };
 
 static void preallocsize(size_t size)
@@ -156,8 +158,9 @@ static void print_help(void)
   "  -e, --expect-error      Expect errors and write them to the output file\n"
   "      --game=GAME         Compile Lua for GAME\n"
   "                          Supported values:\n"
-  "                            t6 \n"
-  "                            t7 \n"
+  "                            t6\n"
+  "                            t7\n"
+  "                            sekiro\n"
   "                          The default value is 't7'\n"
   "  -L[=TYPE]               Enable int literals of the given TYPE\n"
   "  -o, --output=NAME       Output to file NAME\n"
@@ -179,7 +182,8 @@ static void print_help(void)
   "About game title options (to use with '--game')\n"
   "  The frontend will look for a given process depending on this option\n"
   "    t6: will look for 't6sp.exe'\n"
-  "    t7: will look for 'blackops3.exe'\n\n", stderr);
+  "    t7: will look for 'blackops3.exe'\n"
+  "    sekiro: will look for 'sekiro.exe'\n\n", stderr);
   fputs(
   "If '-e' is used, the program succeeds and exits with code 0 only if all\n"
   "source files contain syntax errors\n"
@@ -353,11 +357,14 @@ static char *xgetfulldllpath(const char *name)
 
 static int invokebackend(void);
 
+#define STREQ(a,b) (_stricmp(a,b) == 0)
+#define STREQN(a,b) (strncmp(a,b,strlen(a)) == 0)
 
 int main(int argc, const char *argv[])
 {
   int status;
   int nfiles=doargs(argc, argv); /* parse args */
+  const char *dllname;
   if (nfiles == 0)
     usage("no input files given");
   else if (nfiles > 1) {
@@ -368,18 +375,26 @@ int main(int argc, const char *argv[])
     if (callstackdbname != NULL)
       error_multiple_inputs("--callstackdb");
   }
-  if (_stricmp(targetgame, "t6") == 0) {
-    dllpath = xgetfulldllpath("compiler_t6.dll");
+  if (STREQ(targetgame, "t6")) {
+    dllname = "compiler_t6.dll";
     targetprocess = "t6sp.exe";
     gameid = GAME_T6;
   }
-  else if (_stricmp(targetgame, "t7") == 0) {
-    dllpath = xgetfulldllpath("compiler_t7.dll");
+  else if (STREQ(targetgame, "t7")) {
+    dllname = "compiler_t7.dll";
     targetprocess = "blackops3.exe";
     gameid = GAME_T7;
   }
-  else
+  else if (STREQN(targetgame, "sekiro")) {
+    dllname = "compiler_sekiro.dll";
+    targetprocess = "sekiro.exe";
+    gameid = GAME_SEKIRO;
+  }
+  else {
     usage("invalid value for '--game'");
+    return EXIT_FAILURE;
+  }
+  dllpath = xgetfulldllpath(dllname);
   argv++;
   n_infiles = nfiles;
   infiles = argv;
