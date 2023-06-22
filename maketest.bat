@@ -29,7 +29,7 @@ for %%f in (%hksc_srcdir%/test/*.lua) do (
 			--callstackdb=%hksc_testdir%/t7/test/%%~nf.profileexpect ^
 			-o %hksc_testdir%/t7/test/%%~nf.cexpect
 		)
-		echo %%~xf | findstr /R "^s_.*$" >NUL 2>&1 && (
+		echo %%f | findstr /R "^s_.*$" >NUL 2>&1 && (
 			%HKSC% --game=sekiro %hksc_srcdir%/test/%%~f ^
 			--debugfile=%hksc_testdir%/s/test/%%~nf.debugexpect ^
 			--callstackdb=%hksc_testdir%/s/test/%%~nf.profileexpect ^
