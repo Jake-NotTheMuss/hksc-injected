@@ -243,6 +243,7 @@ static const char *remapfilenameex(MidEndState *me, lua_State *s,
   return hksi_lua_pushfstring(s, "%s%s", addprefix, filename);
 }
 
+#define LUA_SIGNATURE "\033Lua"
 
 static int hksL_loadfile (MidEndState *me, HksCompilerSettings *options,
                           const char *filename) {
@@ -267,6 +268,17 @@ static int hksL_loadfile (MidEndState *me, HksCompilerSettings *options,
     while ((c = getc(lf.f)) != EOF && c != '\n') ;  /* skip first line */
     if (c == '\n') c = getc(lf.f);
   }
+  if (c == LUA_SIGNATURE[0] && lf.f != stdin) {
+    fclose(lf.f);
+    lf.f = fopen(filename, "rb");
+    if (lf.f == NULL) {
+      const char *serr = strerror(errno);
+      lua_pushfstring(s, "cannot reopen %s: %s", filename, serr);
+      return LUA_ERRFILE;
+    }
+    while ((c = getc(lf.f)) != EOF && c != LUA_SIGNATURE[0]) ;
+    lf.extraline = 0;
+  }
   ungetc(c, lf.f);
   status = hks_load(s, options, getF, &lf, NULL, NULL, chunkname);
   fclose(lf.f);  /* close file (even in case of errors) */
@@ -290,7 +302,7 @@ static int luaL_loadfile(MidEndState *me, hksc_Context *ctx,
   settings.m_emitMemoCode = 1;
   settings.m_isMemoTestingMode = 0;
 #endif /* WITH_GLOBAL_MEMO */
-  settings.m_bytecodeSharingFormat = BYTECODE_INPLACE;
+  settings.m_bytecodeSharingFormat = BYTECODE_DEFAULT;
   settings.m_enableIntLiterals = ctx->enable_int_literals;
   settings.m_debugMap = hks_identity_map;
   return hksL_loadfile(me, &settings, filename);
