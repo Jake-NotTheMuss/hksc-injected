@@ -288,7 +288,7 @@ static int luaL_loadfile(MidEndState *me, hksc_Context *ctx,
   settings.m_stripNames = NULL;
 #ifdef WITH_GLOBAL_MEMO
   settings.m_emitMemoCode = 1;
-  settings.m_isMemoTestingMode = 1;
+  settings.m_isMemoTestingMode = 0;
 #endif /* WITH_GLOBAL_MEMO */
   settings.m_bytecodeSharingFormat = BYTECODE_INPLACE;
   settings.m_enableIntLiterals = ctx->enable_int_literals;
